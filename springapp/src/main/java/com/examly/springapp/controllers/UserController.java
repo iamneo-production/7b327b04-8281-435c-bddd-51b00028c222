@@ -23,10 +23,10 @@ public class UserController {
 	public userServ us;
 	@Autowired
 	public userRepo ur;
-	//@RequestMapping("/home")
-	/*public user hello(Authentication authentication){
+	@RequestMapping("/home")
+	public user hello(Authentication authentication){
 		return ur.findByEmail(authentication.getName()).get();
-	}*/
+	}
 	
 	@RequestMapping(value="/admin", method = RequestMethod.GET)
 	public List<user> getUser(){

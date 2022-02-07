@@ -29,11 +29,11 @@ public class userServ {
 		return user;
 	}
 
-	/*public List<user> getOnlineUser() {
+	public List<user> getOnlineUser() {
 		List<user> onlineuser=new ArrayList<>();
 		ur.findByActive(true).forEach(onlineuser::add);
 		return onlineuser;
-	}*/
+	}
 
 	public ResponseEntity<?> userEditSave(user user) {
 		HashMap<String, String> h=new HashMap<>();
