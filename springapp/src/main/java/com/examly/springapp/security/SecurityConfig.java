@@ -1,5 +1,6 @@
 package com.examly.springapp.security;
 
+import com.examly.springapp.database.enums.Role;
 import com.examly.springapp.security.filters.JwtAuthenticationFilter;
 import com.examly.springapp.security.filters.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests().antMatchers(String.format("%s/**", LOGIN_URL), "/user/signup/**").permitAll();
+        http.authorizeRequests().antMatchers("/admin/**").hasAnyAuthority(Role.ADMIN.name());
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(jwtAuthenticationFilter);
         http.addFilterBefore(new JwtAuthorizationFilter(jwtConfig, authDetailsService), UsernamePasswordAuthenticationFilter.class);

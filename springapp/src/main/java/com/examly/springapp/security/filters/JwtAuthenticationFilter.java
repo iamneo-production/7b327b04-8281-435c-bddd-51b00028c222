@@ -55,9 +55,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
-        Map<String, String> token = new HashMap<>();
-        token.put("access_token", accessToken);
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("access_token", accessToken);
+        resultMap.put("role",user.getAuthorities().stream().findFirst().get().getAuthority() );
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), token);
+        new ObjectMapper().writeValue(response.getOutputStream(), resultMap);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, String> {
-    public List<User> findByActive(boolean active);
+    List<User> findByActive(boolean active);
 
     Optional<User> findByEmail(String email);
 // 	@Modifying

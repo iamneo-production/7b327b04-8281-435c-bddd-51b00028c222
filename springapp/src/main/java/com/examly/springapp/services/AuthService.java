@@ -3,6 +3,7 @@ package com.examly.springapp.services;
 import com.examly.springapp.database.entities.User;
 import com.examly.springapp.database.enums.Role;
 import com.examly.springapp.database.repositories.UserRepo;
+import com.examly.springapp.exceptions.EmailTakenException;
 import com.examly.springapp.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,10 @@ public class AuthService {
         return userRepo.findByEmail(email);
     }
 
-    public User saveUser(UserModel userModel) {
+    public User saveUser(UserModel userModel) throws EmailTakenException {
+        Optional<User> userOptional = getUserByEmail(userModel.getEmail());
+        if (userOptional.isPresent())
+            throw new EmailTakenException();
         return userRepo.save(new User(
                 userModel.getUsername(),
                 userModel.getEmail(),
