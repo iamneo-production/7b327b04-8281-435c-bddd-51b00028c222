@@ -152,6 +152,7 @@ const TransitionsModal = ({ show, toggle, setUser }) => {
                     <TextField
                       label="Password*"
                       className="w-100"
+                      type="password"
                       variant="outlined"
                       value={password}
                       onChange={(e) => setpassword(e.target.value)}
@@ -187,6 +188,7 @@ const TransitionsModal = ({ show, toggle, setUser }) => {
                     <TextField
                       label="Password*"
                       className="w-100"
+                      type="password"
                       variant="outlined"
                       value={password}
                       onChange={(e) => setpassword(e.target.value)}
