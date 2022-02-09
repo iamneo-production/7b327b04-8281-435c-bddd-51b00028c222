@@ -3,6 +3,8 @@ package com.examly.springapp.security.filters;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.examly.springapp.database.entities.User;
+import com.examly.springapp.exceptions.InactiveUser;
 import com.examly.springapp.security.AuthDetailsService;
 import com.examly.springapp.security.JwtConfig;
 import com.examly.springapp.security.SecurityConfig;
@@ -56,7 +58,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    request.setAttribute("user_id", authDetailsService.loadUserByEmail(email).getId());
+                    User user = authDetailsService.loadUserByEmail(email);
+                    request.setAttribute("user_id", user.getId());
+                    if(!user.isActive())
+                        throw new InactiveUser("User Inactive. Please contact an Admin to activate your account");
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {
                     response.setHeader("error", e.getMessage());

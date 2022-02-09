@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class UserServ {
+public class UserService {
     @Autowired
     public UserRepo userRepo;
     @Autowired
@@ -52,10 +52,17 @@ public class UserServ {
 		return user;
     }
 
-    public void userDelete(String id) throws UserNotFoundException {
+    @Transactional
+    public void deactivateUser(String id) throws UserNotFoundException {
         Optional<User> userOptional = userRepo.findById(id);
         userOptional.orElseThrow(UserNotFoundException::new);
-        userRepo.delete(userOptional.get());
+        userOptional.get().setActive(false);
     }
 
+    @Transactional
+    public void activateUser(String id) throws UserNotFoundException {
+        Optional<User> userOptional = userRepo.findById(id);
+        userOptional.orElseThrow(UserNotFoundException::new);
+        userOptional.get().setActive(true);
+    }
 }

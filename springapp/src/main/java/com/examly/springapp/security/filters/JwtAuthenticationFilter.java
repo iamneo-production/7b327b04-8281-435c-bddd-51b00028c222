@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -59,6 +60,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         resultMap.put("access_token", accessToken);
         resultMap.put("role",user.getAuthorities().stream().findFirst().get().getAuthority() );
         response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), resultMap);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("error_message", "Incorrect Email or Password");
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(FORBIDDEN.value());
         new ObjectMapper().writeValue(response.getOutputStream(), resultMap);
     }
 }
