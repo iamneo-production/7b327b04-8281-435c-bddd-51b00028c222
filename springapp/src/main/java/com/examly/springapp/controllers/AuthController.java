@@ -7,6 +7,7 @@ import com.examly.springapp.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,11 @@ public class AuthController {
         } catch (Exception e) {
             return new ResponseEntity<String>("Something went wrong on our side. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping(path = "/check_token_validity")
+    public ResponseEntity<String> checkJwtValidity(){
+        return new ResponseEntity<>("Token Valid", HttpStatus.OK);
     }
 
 }
