@@ -1,17 +1,13 @@
 package com.examly.springapp.security.filters;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.examly.springapp.models.UserModel;
 import com.examly.springapp.security.AuthDetailsService;
-import com.examly.springapp.security.JwtConfig;
+import com.examly.springapp.security.JwtManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,11 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -32,12 +25,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtConfig jwtConfig;
+    private final JwtManager jwtManager;
     private final AuthDetailsService authDetailsService;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, AuthDetailsService authDetailsService) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtManager jwtManager, AuthDetailsService authDetailsService) {
         this.authenticationManager = authenticationManager;
-        this.jwtConfig = jwtConfig;
+        this.jwtManager = jwtManager;
         this.authDetailsService = authDetailsService;
     }
 
@@ -52,13 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        Algorithm algorithm = jwtConfig.getAlgorithm();
-        String accessToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(Date.valueOf(LocalDate.now().plusDays(jwtConfig.getAccessTokenExpirationAfterDays())))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algorithm);
+        String accessToken = jwtManager.generateAccessToken(user.getUsername(), request.getRequestURL().toString(), user.getAuthorities());
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("access_token", accessToken);
         com.examly.springapp.database.entities.User authenticatedUser = authDetailsService.loadUserByEmail(user.getUsername());
@@ -69,7 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 authenticatedUser.getMobileNumber(),
                 authenticatedUser.getRole()
         );
-        resultMap.put("user",userResponseDetails);
+        resultMap.put("user", userResponseDetails);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), resultMap);
     }

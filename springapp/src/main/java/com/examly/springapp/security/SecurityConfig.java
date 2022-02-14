@@ -28,13 +28,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String LOGIN_URL = "/user/login";
 
     private final AuthDetailsService authDetailsService;
-    private final JwtConfig jwtConfig;
+    private final JwtManager jwtManager;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SecurityConfig(AuthDetailsService authDetailsService, JwtConfig jwtConfig, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(AuthDetailsService authDetailsService, JwtManager jwtManager, PasswordEncoder passwordEncoder) {
         this.authDetailsService = authDetailsService;
-        this.jwtConfig = jwtConfig;
+        this.jwtManager = jwtManager;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager(), jwtConfig, authDetailsService);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager(), jwtManager, authDetailsService);
         jwtAuthenticationFilter.setFilterProcessesUrl(LOGIN_URL);
 
         http.cors();
@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/admin/**").hasAnyAuthority(Role.ADMIN.name());
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(jwtAuthenticationFilter);
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtConfig, authDetailsService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtManager, authDetailsService), UsernamePasswordAuthenticationFilter.class);
 
     }
 

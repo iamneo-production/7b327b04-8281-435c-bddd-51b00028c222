@@ -6,7 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.examly.springapp.database.entities.User;
 import com.examly.springapp.exceptions.InactiveUser;
 import com.examly.springapp.security.AuthDetailsService;
-import com.examly.springapp.security.JwtConfig;
+import com.examly.springapp.security.JwtManager;
 import com.examly.springapp.security.SecurityConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final JwtConfig jwtConfig;
+    private final JwtManager jwtManager;
     private final AuthDetailsService authDetailsService;
 
     @Autowired
-    public JwtAuthorizationFilter(JwtConfig jwtConfig, AuthDetailsService authDetailsService) {
-        this.jwtConfig = jwtConfig;
+    public JwtAuthorizationFilter(JwtManager jwtManager, AuthDetailsService authDetailsService) {
+        this.jwtManager = jwtManager;
         this.authDetailsService = authDetailsService;
     }
 
@@ -43,10 +43,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
+            if (authorizationHeader != null && authorizationHeader.startsWith(jwtManager.getTokenPrefix())) {
                 try {
-                    String token = authorizationHeader.substring(jwtConfig.getTokenPrefix().length());
-                    JWTVerifier verifier = JWT.require(jwtConfig.getAlgorithm()).build();
+                    String token = authorizationHeader.substring(jwtManager.getTokenPrefix().length());
+                    JWTVerifier verifier = JWT.require(jwtManager.getAlgorithm()).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String email = decodedJWT.getSubject();
                     String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
@@ -60,7 +60,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     User user = authDetailsService.loadUserByEmail(email);
                     request.setAttribute("user_id", user.getId());
-                    if(!user.isActive())
+                    if (!user.isActive())
                         throw new InactiveUser("User Inactive. Please contact an Admin to activate your account");
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {
