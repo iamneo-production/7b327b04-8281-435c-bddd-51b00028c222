@@ -10,7 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CreateUserModal from "./CreateUserModal/createUser";
-import EditUserModal from "./EditUserModal/editUser";
+import EditUserModal from "./EditUser/editUser";
 
 class UsersContainer extends Component {
   state = {
@@ -34,6 +34,19 @@ class UsersContainer extends Component {
         console.log(res.data);
         if (res.status === 200) {
           this.setState({ users: res.data });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+  deactiveUser = async (id) => {
+    const url = api.baseURL + "/admin/user/" + id + "/deactivate";
+    const token = localStorage.getItem("evtoken");
+    await axios
+      .put(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        console.log(res.data);
+        if (res.status < 300) {
+          this.getUsers();
         }
       })
       .catch((err) => console.log(err));
@@ -109,7 +122,12 @@ class UsersContainer extends Component {
                               this.toggleUpdate();
                             }}
                           ></i>
-                          <i className="fas fa-trash text-danger cursor-pointer"></i>
+                          <i
+                            className="fas fa-trash text-danger cursor-pointer"
+                            onClick={() => {
+                              this.deactiveUser(user.id);
+                            }}
+                          ></i>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -124,7 +142,7 @@ class UsersContainer extends Component {
           toggle={this.toggleCreate}
           getUsers={this.getUsers}
         />
-        <UpdateUserModal
+        <EditUserModal
           show={this.state.update}
           toggle={this.toggleUpdate}
           getUsers={this.getUsers}
