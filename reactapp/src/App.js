@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./components/HomePage/homePage";
 import { connect } from "react-redux";
 import actionTypes from "./store/actions/actionTypes";
+import UsersContainer from "./containers/Admin/Users/users";
 
 function App() {
   useEffect(() => {
@@ -24,7 +25,8 @@ function App() {
         <div className="App">
           <Header />
           <Switch>
-            <Route path="/" component={HomePage} />
+            <Route exact path="/admin/users" component={UsersContainer} />
+            <Route exact path="/" component={HomePage} />
           </Switch>
         </div>
       </BrowserRouter>
