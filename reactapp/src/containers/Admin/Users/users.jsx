@@ -10,14 +10,20 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CreateUserModal from "./CreateUserModal/createUser";
+import EditUserModal from "./EditUserModal/editUser";
 
 class UsersContainer extends Component {
   state = {
     users: [],
     create: false,
+    update: false,
+    selectedUser: null,
   };
   toggleCreate = () => {
     this.setState({ create: !this.state.create });
+  };
+  toggleUpdate = () => {
+    this.setState({ update: !this.state.update });
   };
   getUsers = async () => {
     const url = api.baseURL + "/admin/users";
@@ -96,7 +102,13 @@ class UsersContainer extends Component {
                       <TableCell align="center">{user.doj}</TableCell>
                       <TableCell align="center">
                         <div className="d-flex justify-content-around align-items-center">
-                          <i className="fas fa-edit text-primary cursor-pointer"></i>
+                          <i
+                            className="fas fa-edit text-primary cursor-pointer"
+                            onClick={() => {
+                              this.setState({ selectedUser: user });
+                              this.toggleUpdate();
+                            }}
+                          ></i>
                           <i className="fas fa-trash text-danger cursor-pointer"></i>
                         </div>
                       </TableCell>
@@ -111,6 +123,12 @@ class UsersContainer extends Component {
           show={this.state.create}
           toggle={this.toggleCreate}
           getUsers={this.getUsers}
+        />
+        <UpdateUserModal
+          show={this.state.update}
+          toggle={this.toggleUpdate}
+          getUsers={this.getUsers}
+          data={this.state.selectedUser}
         />
       </div>
     );
