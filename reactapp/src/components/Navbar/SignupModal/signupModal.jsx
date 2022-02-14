@@ -9,6 +9,7 @@ import axios from "axios";
 import actionTypes from "../../../store/actions/actionTypes";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
+import * as actions from "../../../store/actions/index";
 
 const modalStyle = {
   position: "absolute",
@@ -23,58 +24,40 @@ const modalStyle = {
   p: 4,
 };
 
-const TransitionsModal = ({ show, toggle, setUser }) => {
+const TransitionsModal = ({ show, toggle, signup, login }) => {
   const [username, setusername] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [activeTab, setactiveTab] = useState(0);
+  const [mobileNumber, setmobileNumber] = useState("");
 
   const resetFields = () => {
     setusername("");
     setemail("");
     setpassword("");
+    setmobileNumber("");
     setactiveTab(0);
   };
   const userCreate = async () => {
-    const url = api.baseURL + "/users/create";
     const body = {
       username,
       email,
       password,
+      mobileNumber,
     };
-    await axios
-      .post(url, body)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.success) {
-          localStorage.setItem("user", JSON.stringify(res.data.data));
-          setUser(res.data.data);
-          resetFields();
-          toggle();
-        } else {
-          toast.warning(res.data.message);
-        }
-      })
-      .catch((err) => console.log(err));
+    signup(body);
+    resetFields();
+    toggle();
   };
   const userLogin = async () => {
-    const url = api.baseURL + "/users/login";
     const body = {
       email,
       password,
     };
-    await axios
-      .post(url, body)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.success) {
-          localStorage.setItem("user", JSON.stringify(res.data.data));
-          setUser(res.data.data);
-          resetFields();
-          toggle();
-        }
-      })
-      .catch((err) => console.log(err));
+
+    login(body);
+    resetFields();
+    toggle();
   };
 
   return (
@@ -158,6 +141,15 @@ const TransitionsModal = ({ show, toggle, setUser }) => {
                       onChange={(e) => setpassword(e.target.value)}
                     />
                   </div>
+                  <div className="my-2">
+                    <TextField
+                      label="Mobile Number*"
+                      className="w-100"
+                      variant="outlined"
+                      value={mobileNumber}
+                      onChange={(e) => setmobileNumber(e.target.value)}
+                    />
+                  </div>
                   <div className="mt-4 mb-2 d-flex flex-row justify-content-center">
                     <button
                       className="btn w-100 text-white"
@@ -166,7 +158,10 @@ const TransitionsModal = ({ show, toggle, setUser }) => {
                         backgroundColor: "#1ab188",
                       }}
                       disabled={
-                        username === "" || email === "" || password === ""
+                        username === "" ||
+                        email === "" ||
+                        password === "" ||
+                        mobileNumber === ""
                       }
                     >
                       <p className="fs-24 mb-0">GET STARTED</p>
@@ -218,7 +213,8 @@ const TransitionsModal = ({ show, toggle, setUser }) => {
 
 const mapDispatchtoProps = (dispatch) => {
   return {
-    setUser: (data) => dispatch({ type: actionTypes.SET_USER, data: data }),
+    signup: (data) => dispatch(actions.signup(data)),
+    login: (data) => dispatch(actions.login(data)),
   };
 };
 
