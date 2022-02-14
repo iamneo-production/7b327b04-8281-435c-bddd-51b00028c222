@@ -67,7 +67,7 @@ class UsersContainer extends Component {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">Sl No.</TableCell>
+                    <TableCell align="center">Sl No</TableCell>
                     <TableCell align="center">Username</TableCell>
                     <TableCell align="center">Email(g)</TableCell>
                     <TableCell align="center">Mobile Number</TableCell>
