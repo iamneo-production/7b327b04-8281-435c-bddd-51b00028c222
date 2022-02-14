@@ -1,10 +1,11 @@
 import React from "react";
-import BannerComp from "./BannerComp/bannerComp";
-
+import BannerComp from "./home";
+import Footer from "./footer"
 const HomePage = () => {
   return (
     <>
       <BannerComp />
+      <Footer/>
     </>
   );
 };
