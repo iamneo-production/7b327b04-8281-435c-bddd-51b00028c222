@@ -1,6 +1,6 @@
 import axios from "axios";
-import * as actionTypes from "../actionTypes";
-import api from "../../../common/api";
+import * as actionTypes from "./actionTypes";
+import api from "../../common/api";
 
 export const signup = (data) => {
   return (dispatch) => {
@@ -28,6 +28,7 @@ export const login = (data) => {
       .post(url, formData)
       .then((res) => {
         console.log("Login", res.data);
+        dispatch({ type: actionTypes.SET_USER, data: {} });
         localStorage.setItem("evtoken", res.data.access_token);
         localStorage.setItem("role", res.data.role);
       })
