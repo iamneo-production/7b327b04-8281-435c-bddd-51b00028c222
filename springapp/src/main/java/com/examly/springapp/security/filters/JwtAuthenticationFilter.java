@@ -2,6 +2,8 @@ package com.examly.springapp.security.filters;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.examly.springapp.models.UserModel;
+import com.examly.springapp.security.AuthDetailsService;
 import com.examly.springapp.security.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +33,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
+    private final AuthDetailsService authDetailsService;
 
-    @Autowired
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, AuthDetailsService authDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
+        this.authDetailsService = authDetailsService;
     }
 
     @Override
@@ -56,9 +59,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
-        Map<String, String> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("access_token", accessToken);
-        resultMap.put("role",user.getAuthorities().stream().findFirst().get().getAuthority() );
+        com.examly.springapp.database.entities.User authenticatedUser = authDetailsService.loadUserByEmail(user.getUsername());
+        UserModel userResponseDetails = new UserModel(
+                authenticatedUser.getEmail(),
+                null,
+                authenticatedUser.getUsername(),
+                authenticatedUser.getMobileNumber(),
+                authenticatedUser.getRole()
+        );
+        resultMap.put("user",userResponseDetails);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), resultMap);
     }
