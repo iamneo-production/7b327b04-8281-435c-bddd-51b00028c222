@@ -7,10 +7,7 @@ import com.examly.springapp.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthController {
@@ -23,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/user/signup")
-    public ResponseEntity<?> saveUser(@ModelAttribute UserModel userModel) {
+    public ResponseEntity<?> saveUser(@RequestBody UserModel userModel) {
 
         try {
             return new ResponseEntity<User>(authService.saveUser(userModel), HttpStatus.CREATED);
