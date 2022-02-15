@@ -31,20 +31,34 @@ class UsersContainer extends Component {
     await axios
       .get(url, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
-        console.log(res.data);
+        console.log("Get Users", res.data);
         if (res.status === 200) {
           this.setState({ users: res.data });
         }
       })
       .catch((err) => console.log(err));
   };
-  deactiveUser = async (id) => {
+  deactivateUser = async (id) => {
     const url = api.baseURL + "/admin/user/" + id + "/deactivate";
+    const token = localStorage.getItem("evtoken");
+    console.log(token);
+    await axios
+      .put(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        console.log("Deactivate User", res.data);
+        if (res.status < 300) {
+          this.getUsers();
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+  activateUser = async (id) => {
+    const url = api.baseURL + "/admin/user/" + id + "/activate";
     const token = localStorage.getItem("evtoken");
     await axios
       .put(url, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
-        console.log(res.data);
+        console.log("Activate User", res.data);
         if (res.status < 300) {
           this.getUsers();
         }
@@ -93,7 +107,7 @@ class UsersContainer extends Component {
                     <TableCell align="center">Role</TableCell>
                     <TableCell align="center">Active</TableCell>
                     <TableCell align="center">Date of Joining</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <TableCell align="center">Update</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -109,26 +123,43 @@ class UsersContainer extends Component {
                       <TableCell align="center">{user.email}</TableCell>
                       <TableCell align="center">{user.mobileNumber}</TableCell>
                       <TableCell align="center">{user.role}</TableCell>
-                      <TableCell align="center">
-                        {user.active ? "YES" : "NO"}
+                      <TableCell
+                        align="center"
+                        onClick={() => {
+                          if (user.active) {
+                            this.deactivateUser(user.id);
+                          } else {
+                            this.activateUser(user.id);
+                          }
+                        }}
+                        title={
+                          user.active ? "Deactivate User" : "Activate User"
+                        }
+                      >
+                        {user.active ? (
+                          <>
+                            YES{" "}
+                            <i className="fas fa-eye text-danger cursor-pointer"></i>
+                          </>
+                        ) : (
+                          <>
+                            NO{" "}
+                            <i className="fas fa-eye-slash text-success cursor-pointer"></i>
+                          </>
+                        )}
                       </TableCell>
                       <TableCell align="center">{user.doj}</TableCell>
-                      <TableCell align="center">
-                        <div className="d-flex justify-content-around align-items-center">
-                          <i
-                            className="fas fa-edit text-primary cursor-pointer"
-                            onClick={() => {
-                              this.setState({ selectedUser: user });
-                              this.toggleUpdate();
-                            }}
-                          ></i>
-                          <i
-                            className="fas fa-trash text-danger cursor-pointer"
-                            onClick={() => {
-                              this.deactiveUser(user.id);
-                            }}
-                          ></i>
-                        </div>
+                      <TableCell
+                        align="center"
+                        onClick={() => {
+                          this.setState(
+                            { selectedUser: user },
+                            this.toggleUpdate
+                          );
+                        }}
+                        title="Edit User"
+                      >
+                        <i className="fas fa-edit text-primary cursor-pointer"></i>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -142,12 +173,14 @@ class UsersContainer extends Component {
           toggle={this.toggleCreate}
           getUsers={this.getUsers}
         />
-        <EditUserModal
-          show={this.state.update}
-          toggle={this.toggleUpdate}
-          getUsers={this.getUsers}
-          data={this.state.selectedUser}
-        />
+        {this.state.selectedUser && (
+          <EditUserModal
+            show={this.state.update}
+            toggle={this.toggleUpdate}
+            getUsers={this.getUsers}
+            data={this.state.selectedUser}
+          />
+        )}
       </div>
     );
   }
