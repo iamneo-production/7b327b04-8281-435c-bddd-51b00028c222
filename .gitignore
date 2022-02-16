@@ -1,4 +1,4 @@
 .github/
 .metadata/
-.junit/
-.puppeteer/
+junit/
+puppeteer/
