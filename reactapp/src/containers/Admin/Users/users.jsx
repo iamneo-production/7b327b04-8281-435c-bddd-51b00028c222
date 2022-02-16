@@ -43,7 +43,7 @@ class UsersContainer extends Component {
     const token = localStorage.getItem("evtoken");
     console.log(token);
     await axios
-      .put(url, { headers: { Authorization: `Bearer ${token}` } })
+      .put(url, {}, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         console.log("Deactivate User", res.data);
         if (res.status < 300) {
@@ -56,7 +56,7 @@ class UsersContainer extends Component {
     const url = api.baseURL + "/admin/user/" + id + "/activate";
     const token = localStorage.getItem("evtoken");
     await axios
-      .put(url, { headers: { Authorization: `Bearer ${token}` } })
+      .put(url, {}, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         console.log("Activate User", res.data);
         if (res.status < 300) {
