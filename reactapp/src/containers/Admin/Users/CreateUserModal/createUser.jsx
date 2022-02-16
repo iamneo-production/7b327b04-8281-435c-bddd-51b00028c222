@@ -19,14 +19,21 @@ class CreateUserModal extends Component {
   createUser = async () => {
     const url = api.baseURL + "/admin/user/add";
     const token = localStorage.getItem("evtoken");
-    const formData = new FormData();
-    formData.append("email", this.state.email);
-    formData.append("password", this.state.password);
-    formData.append("userRole", this.state.role);
-    formData.append("mobileNumber", this.state.mobileNumber);
-    formData.append("username", this.state.username);
+    // const formData = new FormData();
+    // formData.append("email", this.state.email);
+    // formData.append("password", this.state.password);
+    // formData.append("userRole", this.state.role);
+    // formData.append("mobileNumber", this.state.mobileNumber);
+    // formData.append("username", this.state.username);
+    const body = {
+      email: this.state.email,
+      username: this.state.username,
+      password: this.state.password,
+      userRole: this.state.userRole,
+      mobileNumber: this.state.mobileNumber,
+    };
     await axios
-      .post(url, formData, { headers: { Authorization: `Bearer ${token}` } })
+      .post(url, body, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         console.log(res.data);
         if (res.status < 210) {
@@ -82,7 +89,7 @@ class CreateUserModal extends Component {
                 }
               />
             </div>
-            <div className="my-2">
+            {/* <div className="my-2">
               <FormControl fullWidth>
                 <InputLabel id="role-select-label">Role</InputLabel>
                 <Select
@@ -96,7 +103,7 @@ class CreateUserModal extends Component {
                   <MenuItem value="CUSTOMER">Customer</MenuItem>
                 </Select>
               </FormControl>
-            </div>
+            </div> */}
 
             <div className="my-3">
               <div className="d-flex justify-content-center align-items-center">
