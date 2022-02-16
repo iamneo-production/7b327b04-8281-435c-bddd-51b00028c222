@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping(path = "/admin")
 public class UserController {
 
-    private UserService userService;
-    private AuthService authService;
+    private final UserService userService;
+    private final AuthService authService;
 
     @Autowired
     public UserController(UserService userService, AuthService authService) {
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/user/add")
-    public ResponseEntity<?> addUser(@ModelAttribute UserModel userModel){
+    public ResponseEntity<?> addUser(@RequestBody UserModel userModel){
         try {
             return new ResponseEntity<User>(authService.saveUser(userModel), HttpStatus.CREATED);
         } catch (EmailTakenException e1) {
@@ -57,7 +57,7 @@ public class UserController {
     }
 
      @RequestMapping(method=RequestMethod.PUT, value="/user/{id}/edit")
-     ResponseEntity<?> editUser(@PathVariable("id") String id, @ModelAttribute UserModel userModel) {
+     ResponseEntity<?> editUser(@PathVariable("id") String id, @RequestBody UserModel userModel) {
 
          try {
              return new ResponseEntity<>(userService.editUser(id, userModel), HttpStatus.OK);
