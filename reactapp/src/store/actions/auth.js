@@ -21,11 +21,11 @@ export const signup = (data) => {
 export const login = (data) => {
   return (dispatch) => {
     const url = api.baseURL + "/user/login";
-    const formData = new FormData();
-    formData.append("email", data.email);
-    formData.append("password", data.password);
+    // const formData = new FormData();
+    // formData.append("email", data.email);
+    // formData.append("password", data.password);
     axios
-      .post(url, formData)
+      .post(url, data)
       .then((res) => {
         console.log("Login", res.data);
         dispatch({ type: actionTypes.SET_USER, data: {} });

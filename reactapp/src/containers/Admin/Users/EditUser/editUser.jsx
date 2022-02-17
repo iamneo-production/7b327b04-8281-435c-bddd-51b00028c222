@@ -8,16 +8,16 @@ import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
 import api from "../../../../common/api";
 
-class CreateUserModal extends Component {
+class EditUserModal extends Component {
   state = {
-    username: "",
-    email: "",
-    password: "",
-    mobileNumber: "",
-    role: "ADMIN",
+    username: this.props.data.username,
+    email: this.props.data.email,
+    password: this.props.data.password,
+    mobileNumber: this.props.data.mobileNumber,
+    role: this.props.data.role,
   };
-  createUser = async () => {
-    const url = api.baseURL + "/admin/user/add";
+  updateUser = async () => {
+    const url = api.baseURL + "/admin/user/" + this.props.data.id + "/edit";
     const token = localStorage.getItem("evtoken");
     // const formData = new FormData();
     // formData.append("email", this.state.email);
@@ -33,7 +33,7 @@ class CreateUserModal extends Component {
       mobileNumber: this.state.mobileNumber,
     };
     await axios
-      .post(url, body, { headers: { Authorization: `Bearer ${token}` } })
+      .put(url, body, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         console.log(res.data);
         if (res.status < 210) {
@@ -115,9 +115,9 @@ class CreateUserModal extends Component {
                     this.state.password === "" ||
                     this.state.mobileNumber === ""
                   }
-                  onClick={this.createUser}
+                  onClick={this.updateUser}
                 >
-                  Create
+                  Update
                 </button>
                 <button className="btn btn-danger mx-1" onClick={toggle}>
                   Cancel
@@ -131,4 +131,4 @@ class CreateUserModal extends Component {
   }
 }
 
-export default CreateUserModal;
+export default EditUserModal;
