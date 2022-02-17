@@ -1,7 +1,7 @@
 package com.examly.springapp.models;
 
 public class ThemeModel {
-    private Integer themeId;
+    private String themeId;
     private String themeName;
     private String themeDescription;
     private String themePhotographer;
@@ -11,7 +11,7 @@ public class ThemeModel {
     private String themeImageUrl;
 
     public ThemeModel(
-            Integer themeId,
+            String themeId,
             String themeName,
             String themeDescription,
             String themePhotographer,
@@ -30,11 +30,11 @@ public class ThemeModel {
         this.themeImageUrl = themeImageUrl;
     }
 
-    public Integer getThemeId() {
+    public String getThemeId() {
         return themeId;
     }
 
-    public void setThemeId(Integer themeId) {
+    public void setThemeId(String themeId) {
         this.themeId = themeId;
     }
 

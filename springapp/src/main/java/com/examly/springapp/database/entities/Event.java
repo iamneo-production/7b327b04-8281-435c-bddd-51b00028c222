@@ -40,6 +40,9 @@ public class Event {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime eventTime;
 
+    @ManyToOne(optional = false)
+    private Theme theme;
+
     @ManyToOne
     private Menu menu;
 
@@ -68,6 +71,7 @@ public class Event {
             String eventAddress,
             LocalDate eventDate,
             LocalTime eventTime,
+            Theme theme,
             Menu menu,
             Double eventCost,
             LocalDate dateBooked,
@@ -82,6 +86,7 @@ public class Event {
         this.eventAddress = eventAddress;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
+        this.theme = theme;
         this.menu = menu;
         this.eventCost = eventCost;
         this.dateBooked = dateBooked;
@@ -99,6 +104,7 @@ public class Event {
             String eventAddress,
             LocalDate eventDate,
             LocalTime eventTime,
+            Theme theme,
             Menu menu,
             Double eventCost,
             LocalDate dateBooked,
@@ -114,6 +120,7 @@ public class Event {
         this.eventAddress = eventAddress;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
+        this.theme = theme;
         this.menu = menu;
         this.eventCost = eventCost;
         this.dateBooked = dateBooked;
@@ -193,6 +200,14 @@ public class Event {
         this.eventTime = eventTime;
     }
 
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+    }
+
     public Menu getMenu() {
         return menu;
     }
@@ -245,11 +260,12 @@ public class Event {
                 ", eventAddress='" + eventAddress + '\'' +
                 ", eventDate=" + eventDate +
                 ", eventTime=" + eventTime +
+                ", theme=" + theme +
                 ", menu=" + menu +
                 ", eventCost=" + eventCost +
                 ", dateBooked=" + dateBooked +
                 ", bookedBy=" + bookedBy +
-                // ", addOns=" + addOns +
+                //", addOns=" + addOns +
                 '}';
     }
 }
