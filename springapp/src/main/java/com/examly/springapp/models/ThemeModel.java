@@ -1,40 +1,34 @@
 package com.examly.springapp.models;
-import org.springframework.stereotype.Component;
-import javax.persistence.*;
 
-@Entity
-@Component
-@Table(name = "theme_info")
-public class ThemeModel 
-{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+public class ThemeModel {
     private Integer themeId;
-
-    @Column(name = "name")
     private String themeName;
-
-    @Column(name = "description")
     private String themeDescription;
-
-    @Column(name = "photographer")
     private String themePhotographer;
-
-    @Column(name = "videographer")
     private String themeVideographer;
-
-    @Column(name = "themereturngift")
-    private int themeReturnGift;
-
-    @Column(name = "ratings")
-    private int themeRatings;
-
-    @Column(name = "themecost")
-    private long themeCost;
-
-    @Column(name = "themeimg")
+    private String themeReturnGift;
+    private Double themeCost;
     private String themeImageUrl;
+
+    public ThemeModel(
+            Integer themeId,
+            String themeName,
+            String themeDescription,
+            String themePhotographer,
+            String themeVideographer,
+            String themeReturnGift,
+            Double themeCost,
+            String themeImageUrl
+    ) {
+        this.themeId = themeId;
+        this.themeName = themeName;
+        this.themeDescription = themeDescription;
+        this.themePhotographer = themePhotographer;
+        this.themeVideographer = themeVideographer;
+        this.themeReturnGift = themeReturnGift;
+        this.themeCost = themeCost;
+        this.themeImageUrl = themeImageUrl;
+    }
 
     public Integer getThemeId() {
         return themeId;
@@ -76,27 +70,19 @@ public class ThemeModel
         this.themeVideographer = themeVideographer;
     }
 
-    public int getThemeReturnGift() {
+    public String getThemeReturnGift() {
         return themeReturnGift;
     }
 
-    public void setThemeReturnGift(int themeReturnGift) {
+    public void setThemeReturnGift(String themeReturnGift) {
         this.themeReturnGift = themeReturnGift;
     }
 
-    public int getThemeRatings() {
-        return themeRatings;
-    }
-
-    public void setThemeRatings(int themeRatings) {
-        this.themeRatings = themeRatings;
-    }
-
-    public long getThemeCost() {
+    public Double getThemeCost() {
         return themeCost;
     }
 
-    public void setThemeCost(long themeCost) {
+    public void setThemeCost(Double themeCost) {
         this.themeCost = themeCost;
     }
 
@@ -108,5 +94,17 @@ public class ThemeModel
         this.themeImageUrl = themeImageUrl;
     }
 
-    
+    @Override
+    public String toString() {
+        return "ThemeModel{" +
+                "themeId=" + themeId +
+                ", themeName='" + themeName + '\'' +
+                ", themeDescription='" + themeDescription + '\'' +
+                ", themePhotographer='" + themePhotographer + '\'' +
+                ", themeVideographer='" + themeVideographer + '\'' +
+                ", themeReturnGift='" + themeReturnGift + '\'' +
+                ", themeCost=" + themeCost +
+                ", themeImageUrl='" + themeImageUrl + '\'' +
+                '}';
+    }
 }
