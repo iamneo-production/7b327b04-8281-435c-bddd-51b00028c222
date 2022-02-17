@@ -51,7 +51,6 @@ public class MenuModel {
         "menuId=" + menuId +
         ", menuType='" + menuType + '\'' +
         ", menuItems='" + menuItems + '\'' +
-        ", menuCost='" + menuCost + '\'' +
         ", menuCost=" + menuCost +
         '}';
     }
