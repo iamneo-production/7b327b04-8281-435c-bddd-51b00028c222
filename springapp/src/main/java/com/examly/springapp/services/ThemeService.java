@@ -6,45 +6,45 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ThemeService 
+public class ThemeService
 {
-    @Autowired
-    ThemeRepo themeRepo;
-
-    public boolean addTheme(ThemeModel themeModel)
-    {
-        themeRepo.save(themeModel);
-        return true;
-    }
-
-    public boolean updateTheme(int themeId, ThemeModel themeModelOld)
-    {
-        ThemeModel themeModelNew = themeRepo.findById(themeId).get();
-        themeModelNew.setThemeName(themeModelOld.getThemeName());
-        themeModelNew.setThemeDescription(themeModelOld.getThemeDescription());
-        themeModelNew.setThemePhotographer(themeModelOld.getThemePhotographer());
-        themeModelNew.setThemeVideographer(themeModelOld.getThemeVideographer());
-        themeModelNew.setThemeImageUrl(themeModelOld.getThemeImageUrl());
-        themeModelNew.setThemeReturnGift(themeModelOld.getThemeReturnGift());
-        themeModelNew.setThemeRatings(themeModelOld.getThemeRatings());
-
-        themeRepo.save(themeModelNew);
-        return true;
-    }
-
-    public boolean deleteTheme(int themeId)
-    {
-        themeRepo.deleteById(themeId);
-        return true;
-    }
-
-    public List<ThemeModel> viewTheme()
-    {
-        return themeRepo.findAll();
-    }
-
-    public ThemeModel viewTheme(int themeId)
-    {
-        return themeRepo.findById(themeId).get();
-    }
+//    @Autowired
+//    ThemeRepo themeRepo;
+//
+//    public boolean addTheme(ThemeModel themeModel)
+//    {
+//        themeRepo.save(themeModel);
+//        return true;
+//    }
+//
+//    public boolean updateTheme(int themeId, ThemeModel themeModelOld)
+//    {
+//        ThemeModel themeModelNew = themeRepo.findById(themeId).get();
+//        themeModelNew.setThemeName(themeModelOld.getThemeName());
+//        themeModelNew.setThemeDescription(themeModelOld.getThemeDescription());
+//        themeModelNew.setThemePhotographer(themeModelOld.getThemePhotographer());
+//        themeModelNew.setThemeVideographer(themeModelOld.getThemeVideographer());
+//        themeModelNew.setThemeImageUrl(themeModelOld.getThemeImageUrl());
+//        themeModelNew.setThemeReturnGift(themeModelOld.getThemeReturnGift());
+//        themeModelNew.setThemeRatings(themeModelOld.getThemeRatings());
+//
+//        themeRepo.save(themeModelNew);
+//        return true;
+//    }
+//
+//    public boolean deleteTheme(int themeId)
+//    {
+//        themeRepo.deleteById(themeId);
+//        return true;
+//    }
+//
+//    public List<ThemeModel> viewTheme()
+//    {
+//        return themeRepo.findAll();
+//    }
+//
+//    public ThemeModel viewTheme(int themeId)
+//    {
+//        return themeRepo.findById(themeId).get();
+//    }
 }
