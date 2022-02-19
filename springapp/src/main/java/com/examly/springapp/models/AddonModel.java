@@ -1,22 +1,19 @@
 package com.examly.springapp.models;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class AddonModel 
 {
 	private String addOnId;
     private String addOnName;
     private String addOnDescription;
-    private LocalDate dateAdded;
-    private Double addOnCost;
+    private Double addOnPrice;
     
-	public AddonModel(String addOnId, String addOnName, String addOnDescription, LocalDate dateAdded, Double addOnCost) {
+	public AddonModel(String addOnId, String addOnName, String addOnDescription, Double addOnPrice) {
 		super();
 		this.addOnId = addOnId;
 		this.addOnName = addOnName;
 		this.addOnDescription = addOnDescription;
-		this.dateAdded = dateAdded;
-		this.addOnCost = addOnCost;
+		this.addOnPrice = addOnPrice;
 	}
 	
 	public String getAddOnId() {
@@ -43,26 +40,18 @@ public class AddonModel
 		this.addOnDescription = addOnDescription;
 	}
 
-	public LocalDate getDateAdded() {
-		return dateAdded;
+	public Double getAddOnPrice() {
+		return addOnPrice;
 	}
 
-	public void setDateAdded(LocalDate dateAdded) {
-		this.dateAdded = dateAdded;
-	}
-
-	public Double getAddOnCost() {
-		return addOnCost;
-	}
-
-	public void setAddOnCost(Double addOnCost) {
-		this.addOnCost = addOnCost;
+	public void setAddOnPrice(Double addOnPrice) {
+		this.addOnPrice = addOnPrice;
 	}
 	
 	@Override
 	public String toString() {
 		return "AddonModel [addOnId=" + addOnId + ", addOnName=" + addOnName + ", addOnDescription=" + addOnDescription
-				+ ", dateAdded=" + dateAdded + ", themeReturnGift=" + ", addOnCost=" + addOnCost
+				+ ", themeReturnGift=" + ", addOnCost=" + addOnPrice
 				+ ", addOnImageUrl=" + "]";
 	}
     

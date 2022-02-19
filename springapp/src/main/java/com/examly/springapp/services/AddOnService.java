@@ -40,7 +40,7 @@ public class AddOnService
         AddOn addOn = new AddOn(
         		addOnModel.getAddOnName(),
         		addOnModel.getAddOnDescription(),
-        		addOnModel.getAddOnCost(),
+        		addOnModel.getAddOnPrice(),
         		LocalDate.now(),
                 addedByUser
         );
@@ -57,14 +57,14 @@ public class AddOnService
             addOn.setAddOnName(addOnModel.getAddOnName());
         if (addOnModel.getAddOnDescription() != null && !Objects.equals(addOnModel.getAddOnDescription(), addOn.getAddOnDescription()))
             addOn.setAddOnDescription(addOnModel.getAddOnDescription());
-        if (addOnModel.getAddOnCost() != null && !Objects.equals(addOnModel.getAddOnCost(), addOn.getAddOnPrice()))
-            addOn.setAddOnPrice(addOnModel.getAddOnCost());
+        if (addOnModel.getAddOnPrice() != null && !Objects.equals(addOnModel.getAddOnPrice(), addOn.getAddOnPrice()))
+            addOn.setAddOnPrice(addOnModel.getAddOnPrice());
         
         return addOn;
     }
     
     @Transactional
-    public void deleteTheme(String addOnId) throws AddOnNotFoundException {
+    public void deleteAddOn(String addOnId) throws AddOnNotFoundException {
         Optional<AddOn> addOnOptional = addOnRepo.findById(addOnId);
         AddOn addOn = addOnOptional.orElseThrow(AddOnNotFoundException::new);
         

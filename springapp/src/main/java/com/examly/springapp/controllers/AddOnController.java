@@ -31,7 +31,6 @@ public class AddOnController
         			addon.getAddOnId(),
                     addon.getAddOnName(),
                     addon.getAddOnDescription(),
-                    addon.getDateAdded(),
                     addon.getAddOnPrice()
             ));
         });
@@ -39,14 +38,13 @@ public class AddOnController
     }
 	
 	@GetMapping(path = {"/admin/getAddon/{addOnId}", "/user/getAddon/{addOnId}"})
-    public ResponseEntity<?> getMenu(@PathVariable("addOnId") String addOnId) {
+    public ResponseEntity<?> getAddOnDetails(@PathVariable("addOnId") String addOnId) {
         try {
             AddOn addon = this.addOnService.getAddOn(addOnId);
             AddonModel addOnModelResponse = new AddonModel(
             		addon.getAddOnId(),
                     addon.getAddOnName(),
                     addon.getAddOnDescription(),
-                    addon.getDateAdded(),
                     addon.getAddOnPrice()
             );
             return new ResponseEntity<AddonModel>(addOnModelResponse, HttpStatus.OK);
@@ -65,7 +63,6 @@ public class AddOnController
             		addon.getAddOnId(),
                     addon.getAddOnName(),
                     addon.getAddOnDescription(),
-                    addon.getDateAdded(),
                     addon.getAddOnPrice()
             );
             return new ResponseEntity<AddonModel>(addOnModelResponse, HttpStatus.OK);
@@ -77,14 +74,13 @@ public class AddOnController
     }
 	
 	@PutMapping(path = "/admin/editAddon/{addOnId}")
-    public ResponseEntity<?> editMenu(@PathVariable("addOnId") String addOnId, @RequestBody AddonModel addOnModel) {
+    public ResponseEntity<?> editAddOn(@PathVariable("addOnId") String addOnId, @RequestBody AddonModel addOnModel) {
         try {
         	AddOn addon = this.addOnService.editAddOn(addOnId, addOnModel);
             AddonModel addOnModelResponse = new AddonModel(
             		addon.getAddOnId(),
                     addon.getAddOnName(),
                     addon.getAddOnDescription(),
-                    addon.getDateAdded(),
                     addon.getAddOnPrice()
             );
             return new ResponseEntity<AddonModel>(addOnModelResponse, HttpStatus.OK);
@@ -96,9 +92,9 @@ public class AddOnController
     }
 	
 	@DeleteMapping(path = "/admin/deleteAddon/{addOnId}")
-    public ResponseEntity<?> deleteMenu(@PathVariable("addOnId") String addOnId) {
+    public ResponseEntity<?> deleteAddOn(@PathVariable("addOnId") String addOnId) {
         try {
-            this.addOnService.deleteTheme(addOnId);
+            this.addOnService.deleteAddOn(addOnId);
             return new ResponseEntity<String>("AddOn Deleted Successfully.", HttpStatus.OK);
         } catch (AddOnNotFoundException e) {
             return new ResponseEntity<String>("AddOn not found with ID: " + addOnId, HttpStatus.NOT_FOUND);
