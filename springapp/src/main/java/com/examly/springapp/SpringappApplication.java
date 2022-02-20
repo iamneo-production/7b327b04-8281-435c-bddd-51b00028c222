@@ -29,16 +29,15 @@ public class SpringappApplication {
     CommandLineRunner runner(UserRepo userRepo, PasswordEncoder passwordEncoder) {
         return args -> {
             Optional<User> byEmail = userRepo.findByEmail("admin@mail.com");
+            User rootAdmin;
             if (byEmail.isEmpty()) {
-                User rootAdmin = new User("admin", "admin@mail.com", passwordEncoder().encode("admin"), null, true, Role.ADMIN, LocalDate.now());
-                userRepo.save(rootAdmin);
+                rootAdmin = new User("admin", "admin@mail.com", passwordEncoder().encode("admin"), null, true, Role.ADMIN, LocalDate.now());
 
+            } else {
+                rootAdmin = byEmail.get();
+                rootAdmin.setActive(true);
             }
-            else{
-                User user = byEmail.get();
-                user.setActive(true);
-                userRepo.save(user);
-            }
+            userRepo.save(rootAdmin);
         };
     }
 
