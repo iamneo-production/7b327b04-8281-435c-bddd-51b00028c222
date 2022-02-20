@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @SpringBootApplication
 public class SpringappApplication {
@@ -27,10 +28,16 @@ public class SpringappApplication {
     @Bean
     CommandLineRunner runner(UserRepo userRepo, PasswordEncoder passwordEncoder) {
         return args -> {
-            if (userRepo.findByEmail("admin@mail.com").isEmpty()) {
+            Optional<User> byEmail = userRepo.findByEmail("admin@mail.com");
+            if (byEmail.isEmpty()) {
                 User rootAdmin = new User("admin", "admin@mail.com", passwordEncoder().encode("admin"), null, true, Role.ADMIN, LocalDate.now());
                 userRepo.save(rootAdmin);
 
+            }
+            else{
+                User user = byEmail.get();
+                user.setActive(true);
+                userRepo.save(user);
             }
         };
     }
