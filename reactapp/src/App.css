@@ -43,6 +43,12 @@
 .w-40 {
   width: 40%;
 }
+.w-45 {
+  width: 45%;
+}
+.w-50{
+  width: 50%;
+}
 .w-55 {
   width: 55%;
 }
@@ -70,7 +76,7 @@
 
 /* Height */
 .h-75 {
-  height: 75%;
+  height: 75%
 }
 
 /* Border Radius */
