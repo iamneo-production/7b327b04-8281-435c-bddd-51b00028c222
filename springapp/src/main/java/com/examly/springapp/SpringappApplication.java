@@ -29,6 +29,7 @@ public class SpringappApplication {
         return new BCryptPasswordEncoder();
     }
 
+    // Filling In some Demo data (Remove on production)
     @Bean
     CommandLineRunner runner(UserRepo userRepo, PasswordEncoder passwordEncoder, ThemeRepo themeRepo, MenuRepo menuRepo, AddOnRepo addOnRepo, EventRepo eventRepo) {
         return args -> {
@@ -126,7 +127,7 @@ public class SpringappApplication {
                 eventRepo.save(event);
                 events.add(event);
             }
-
+            System.out.println("Command Line runner finished");
         };
 
     }

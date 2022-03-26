@@ -3,7 +3,6 @@ package com.examly.springapp.controllers;
 import com.examly.springapp.database.entities.Event;
 import com.examly.springapp.database.entities.User;
 import com.examly.springapp.database.enums.Role;
-import com.examly.springapp.database.repositories.EventRepo;
 import com.examly.springapp.exceptions.*;
 import com.examly.springapp.models.EventModel;
 import com.examly.springapp.services.EventService;
@@ -29,26 +28,8 @@ public class EventController {
         List<Event> events = eventService.getEvents();
         List<EventModel> eventModelsResponse = new ArrayList<>();
         events.forEach(event -> {
-            List<String> addOnIds = new ArrayList<>();
-            event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
-            eventModelsResponse.add(
-                    new EventModel(
-                            event.getEventId(),
-                            event.getEventName(),
-                            event.getApplicantName(),
-                            event.getApplicantAddress(),
-                            event.getApplicantMobile(),
-                            event.getApplicantEmail(),
-                            event.getEventAddress(),
-                            event.getEventDate(),
-                            event.getEventTime(),
-                            event.getTheme().getThemeId(),
-                            event.getMenu().getMenuId(),
-                            event.getEventCost(),
-                            addOnIds,
-                            event.getState()
-                    )
-            );
+            EventModel eventModel = convertToEventModel(event);
+            eventModelsResponse.add(eventModel);
         });
         return new ResponseEntity<>(eventModelsResponse, HttpStatus.OK);
     }
@@ -56,25 +37,7 @@ public class EventController {
     @GetMapping(path = "/admin/getEvent/{eventId}")
     public ResponseEntity<?> getEventById(@PathVariable("eventId") String eventId) {
         try {
-            Event event = eventService.getEventById(eventId);
-            List<String> addOnIds = new ArrayList<>();
-            event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
-            EventModel eventModelResponse = new EventModel(
-                    event.getEventId(),
-                    event.getEventName(),
-                    event.getApplicantName(),
-                    event.getApplicantAddress(),
-                    event.getApplicantMobile(),
-                    event.getApplicantEmail(),
-                    event.getEventAddress(),
-                    event.getEventDate(),
-                    event.getEventTime(),
-                    event.getTheme().getThemeId(),
-                    event.getMenu().getMenuId(),
-                    event.getEventCost(),
-                    addOnIds,
-                    event.getState()
-            );
+            EventModel eventModelResponse = convertToEventModel(eventService.getEventById(eventId));
             return new ResponseEntity<EventModel>(eventModelResponse, HttpStatus.OK);
         } catch (EventNotFoundException e) {
             return new ResponseEntity<String>("Event not found: " + eventId, HttpStatus.NOT_FOUND);
@@ -89,24 +52,7 @@ public class EventController {
             Event event = eventService.getEventById(eventId);
             if (!event.getBookedBy().getId().equals(user_id))
                 return new ResponseEntity<String>("You are not allowed to view this event", HttpStatus.FORBIDDEN);
-            List<String> addOnIds = new ArrayList<>();
-            event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
-            EventModel eventModelResponse = new EventModel(
-                    event.getEventId(),
-                    event.getEventName(),
-                    event.getApplicantName(),
-                    event.getApplicantAddress(),
-                    event.getApplicantMobile(),
-                    event.getApplicantEmail(),
-                    event.getEventAddress(),
-                    event.getEventDate(),
-                    event.getEventTime(),
-                    event.getTheme().getThemeId(),
-                    event.getMenu().getMenuId(),
-                    event.getEventCost(),
-                    addOnIds,
-                    event.getState()
-            );
+            EventModel eventModelResponse = convertToEventModel(event);
             return new ResponseEntity<EventModel>(eventModelResponse, HttpStatus.OK);
         } catch (EventNotFoundException e) {
             return new ResponseEntity<String>("Event not found: " + eventId, HttpStatus.NOT_FOUND);
@@ -122,26 +68,8 @@ public class EventController {
 
             List<EventModel> eventModelsResponse = new ArrayList<>();
             events.forEach(event -> {
-                List<String> addOnIds = new ArrayList<>();
-                event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
-                eventModelsResponse.add(
-                        new EventModel(
-                                event.getEventId(),
-                                event.getEventName(),
-                                event.getApplicantName(),
-                                event.getApplicantAddress(),
-                                event.getApplicantMobile(),
-                                event.getApplicantEmail(),
-                                event.getEventAddress(),
-                                event.getEventDate(),
-                                event.getEventTime(),
-                                event.getTheme().getThemeId(),
-                                event.getMenu().getMenuId(),
-                                event.getEventCost(),
-                                addOnIds,
-                                event.getState()
-                        )
-                );
+                EventModel eventModel = convertToEventModel(event);
+                eventModelsResponse.add(eventModel);
             });
             return new ResponseEntity<List<EventModel>>(eventModelsResponse, HttpStatus.OK);
         } catch (UserNotFoundException e) {
@@ -154,25 +82,7 @@ public class EventController {
     @PostMapping(path = "/user/bookEvent")
     public ResponseEntity<?> addEvent(@RequestBody EventModel eventModel, @RequestAttribute String user_id) {
         try {
-            Event event = eventService.addEvent(eventModel, user_id);
-            List<String> addOnIds = new ArrayList<>();
-            event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
-            EventModel eventModelResponse = new EventModel(
-                    event.getEventId(),
-                    event.getEventName(),
-                    event.getApplicantName(),
-                    event.getApplicantAddress(),
-                    event.getApplicantMobile(),
-                    event.getApplicantEmail(),
-                    event.getEventAddress(),
-                    event.getEventDate(),
-                    event.getEventTime(),
-                    event.getTheme().getThemeId(),
-                    event.getMenu().getMenuId(),
-                    event.getEventCost(),
-                    addOnIds,
-                    event.getState()
-            );
+            EventModel eventModelResponse = convertToEventModel(eventService.addEvent(eventModel, user_id));
             return new ResponseEntity<EventModel>(eventModelResponse, HttpStatus.CREATED);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<String>("User not found: " + user_id, HttpStatus.NOT_FOUND);
@@ -206,8 +116,7 @@ public class EventController {
         try {
             User user = userService.getUser(user_id);
             Event event = eventService.getEventById(eventId);
-            if (user.getRole() == Role.ADMIN || user.getId().equals(event.getBookedBy().getId()))
-            {
+            if (user.getRole() == Role.ADMIN || user.getId().equals(event.getBookedBy().getId())) {
                 eventService.cancelEvent(event);
                 return new ResponseEntity<String>("Event Cancelled", HttpStatus.OK);
             }
@@ -222,6 +131,27 @@ public class EventController {
         } catch (Exception e) {
             return new ResponseEntity<String>("Something went wrong on our side. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private EventModel convertToEventModel(Event event) {
+        List<String> addOnIds = new ArrayList<>();
+        event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
+        return new EventModel(
+                event.getEventId(),
+                event.getEventName(),
+                event.getApplicantName(),
+                event.getApplicantAddress(),
+                event.getApplicantMobile(),
+                event.getApplicantEmail(),
+                event.getEventAddress(),
+                event.getEventDate(),
+                event.getEventTime(),
+                event.getTheme().getThemeId(),
+                event.getMenu().getMenuId(),
+                event.getEventCost(),
+                addOnIds,
+                event.getState()
+        );
     }
 
 }

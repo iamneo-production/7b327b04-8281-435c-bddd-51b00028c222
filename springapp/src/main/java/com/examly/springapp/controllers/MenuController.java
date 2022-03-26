@@ -24,12 +24,7 @@ public class MenuController {
         List<Menu> menus = this.menuService.getMenus();
         List<MenuModel> menuModelsResponse = new ArrayList<>();
         menus.forEach(menu -> {
-            menuModelsResponse.add(new MenuModel(
-                    menu.getMenuId(),
-                    menu.getMenuType(),
-                    menu.getMenuItems(),
-                    menu.getMenuCost()
-            ));
+            menuModelsResponse.add(convertToMenuModel(menu));
         });
         return new ResponseEntity<>(menuModelsResponse, HttpStatus.OK);
     }
@@ -37,13 +32,7 @@ public class MenuController {
     @GetMapping(path = {"/admin/getMenu/{menuId}", "/user/getMenu/{menuId}"})
     public ResponseEntity<?> getMenu(@PathVariable("menuId") String menuId) {
         try {
-            Menu menu = this.menuService.getMenu(menuId);
-            MenuModel menuModelResponse = new MenuModel(
-                    menu.getMenuId(),
-                    menu.getMenuType(),
-                    menu.getMenuItems(),
-                    menu.getMenuCost()
-            );
+            MenuModel menuModelResponse = convertToMenuModel(this.menuService.getMenu(menuId));
             return new ResponseEntity<MenuModel>(menuModelResponse, HttpStatus.OK);
         } catch (MenuNotFoundException e) {
             return new ResponseEntity<String>("Menu not found with ID: " + menuId, HttpStatus.NOT_FOUND);
@@ -55,13 +44,7 @@ public class MenuController {
     @PostMapping(path = "/admin/addMenu")
     public ResponseEntity<?> addMenu(@RequestBody MenuModel menuModel, @RequestAttribute String user_id) {
         try {
-            Menu menu = menuService.addMenu(menuModel, user_id);
-            MenuModel menuModelResponse = new MenuModel(
-                menu.getMenuId(),
-                menu.getMenuType(),
-                menu.getMenuItems(),
-                menu.getMenuCost()
-            );
+            MenuModel menuModelResponse = convertToMenuModel(menuService.addMenu(menuModel, user_id));
             return new ResponseEntity<MenuModel>(menuModelResponse, HttpStatus.CREATED);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<String>("Admin not found: " + user_id, HttpStatus.NOT_FOUND);
@@ -73,13 +56,7 @@ public class MenuController {
     @PutMapping(path = "/admin/editMenu/{menuId}")
     public ResponseEntity<?> editMenu(@PathVariable("menuId") String menuId, @RequestBody MenuModel menuModel) {
         try {
-            Menu menu = this.menuService.editMenu(menuId, menuModel);
-            MenuModel menuModelResponse = new MenuModel(
-                menu.getMenuId(),
-                menu.getMenuType(),
-                menu.getMenuItems(),
-                menu.getMenuCost()
-            );
+            MenuModel menuModelResponse = convertToMenuModel(this.menuService.editMenu(menuId, menuModel));
             return new ResponseEntity<MenuModel>(menuModelResponse, HttpStatus.OK);
         } catch (MenuNotFoundException e) {
             return new ResponseEntity<String>("Menu not found with ID: " + menuId, HttpStatus.NOT_FOUND);
@@ -101,5 +78,14 @@ public class MenuController {
             e.printStackTrace();
             return new ResponseEntity<String>("Something went wrong on our side. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private MenuModel convertToMenuModel(Menu menu) {
+        return new MenuModel(
+                menu.getMenuId(),
+                menu.getMenuType(),
+                menu.getMenuItems(),
+                menu.getMenuCost()
+        );
     }
 }

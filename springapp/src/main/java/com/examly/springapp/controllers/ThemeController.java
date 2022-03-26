@@ -24,16 +24,7 @@ public class ThemeController {
         List<Theme> themes = this.themeService.getThemes();
         List<ThemeModel> themeModelsResponse = new ArrayList<>();
         themes.forEach(theme -> {
-            themeModelsResponse.add(new ThemeModel(
-                    theme.getThemeId(),
-                    theme.getThemeName(),
-                    theme.getThemeDescription(),
-                    theme.getThemePhotographer(),
-                    theme.getThemeVideographer(),
-                    theme.getThemeReturnGift(),
-                    theme.getThemeCost(),
-                    theme.getThemeImageUrl()
-            ));
+            themeModelsResponse.add(convertToThemeModel(theme));
         });
         return new ResponseEntity<>(themeModelsResponse, HttpStatus.OK);
     }
@@ -41,17 +32,7 @@ public class ThemeController {
     @GetMapping(path = {"/admin/getTheme/{themeId}", "/user/getTheme/{themeId}"})
     public ResponseEntity<?> getTheme(@PathVariable("themeId") String themeId) {
         try {
-            Theme theme = this.themeService.getTheme(themeId);
-            ThemeModel themeModelResponse = new ThemeModel(
-                    theme.getThemeId(),
-                    theme.getThemeName(),
-                    theme.getThemeDescription(),
-                    theme.getThemePhotographer(),
-                    theme.getThemeVideographer(),
-                    theme.getThemeReturnGift(),
-                    theme.getThemeCost(),
-                    theme.getThemeImageUrl()
-            );
+            ThemeModel themeModelResponse = convertToThemeModel(this.themeService.getTheme(themeId));
             return new ResponseEntity<ThemeModel>(themeModelResponse, HttpStatus.OK);
         } catch (ThemeNotFoundException e) {
             return new ResponseEntity<String>("Theme not found with ID: " + themeId, HttpStatus.NOT_FOUND);
@@ -63,17 +44,7 @@ public class ThemeController {
     @PostMapping(path = "/admin/addTheme")
     public ResponseEntity<?> addTheme(@RequestBody ThemeModel themeModel, @RequestAttribute String user_id) {
         try {
-            Theme theme = themeService.addTheme(themeModel, user_id);
-            ThemeModel themeModelResponse = new ThemeModel(
-                    theme.getThemeId(),
-                    theme.getThemeName(),
-                    theme.getThemeDescription(),
-                    theme.getThemePhotographer(),
-                    theme.getThemeVideographer(),
-                    theme.getThemeReturnGift(),
-                    theme.getThemeCost(),
-                    theme.getThemeImageUrl()
-            );
+            ThemeModel themeModelResponse = convertToThemeModel(themeService.addTheme(themeModel, user_id));
             return new ResponseEntity<ThemeModel>(themeModelResponse, HttpStatus.CREATED);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<String>("Admin not found: " + user_id, HttpStatus.NOT_FOUND);
@@ -85,17 +56,7 @@ public class ThemeController {
     @PutMapping(path = "/admin/editTheme/{themeId}")
     public ResponseEntity<?> editTheme(@PathVariable("themeId") String themeId, @RequestBody ThemeModel themeModel) {
         try {
-            Theme theme = this.themeService.editTheme(themeId, themeModel);
-            ThemeModel themeModelResponse = new ThemeModel(
-                    theme.getThemeId(),
-                    theme.getThemeName(),
-                    theme.getThemeDescription(),
-                    theme.getThemePhotographer(),
-                    theme.getThemeVideographer(),
-                    theme.getThemeReturnGift(),
-                    theme.getThemeCost(),
-                    theme.getThemeImageUrl()
-            );
+            ThemeModel themeModelResponse = convertToThemeModel(this.themeService.editTheme(themeId, themeModel));
             return new ResponseEntity<ThemeModel>(themeModelResponse, HttpStatus.OK);
         } catch (ThemeNotFoundException e) {
             return new ResponseEntity<String>("Theme not found with ID: " + themeId, HttpStatus.NOT_FOUND);
@@ -119,4 +80,16 @@ public class ThemeController {
         }
     }
 
+    private ThemeModel convertToThemeModel(Theme theme) {
+        return new ThemeModel(
+                theme.getThemeId(),
+                theme.getThemeName(),
+                theme.getThemeDescription(),
+                theme.getThemePhotographer(),
+                theme.getThemeVideographer(),
+                theme.getThemeReturnGift(),
+                theme.getThemeCost(),
+                theme.getThemeImageUrl()
+        );
+    }
 }
