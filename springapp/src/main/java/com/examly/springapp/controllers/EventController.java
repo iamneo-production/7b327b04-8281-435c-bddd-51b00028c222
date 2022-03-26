@@ -1,9 +1,13 @@
 package com.examly.springapp.controllers;
 
 import com.examly.springapp.database.entities.Event;
+import com.examly.springapp.database.entities.User;
+import com.examly.springapp.database.enums.Role;
+import com.examly.springapp.database.repositories.EventRepo;
 import com.examly.springapp.exceptions.*;
 import com.examly.springapp.models.EventModel;
 import com.examly.springapp.services.EventService;
+import com.examly.springapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,8 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping(path = "/admin/getEvents")
     public ResponseEntity<List<EventModel>> getEvents() {
@@ -81,7 +87,7 @@ public class EventController {
     public ResponseEntity<?> getEventByUserId(@PathVariable("eventId") String eventId, @RequestAttribute String user_id) {
         try {
             Event event = eventService.getEventById(eventId);
-            if(!event.getBookedBy().getId().equals(user_id))
+            if (!event.getBookedBy().getId().equals(user_id))
                 return new ResponseEntity<String>("You are not allowed to view this event", HttpStatus.FORBIDDEN);
             List<String> addOnIds = new ArrayList<>();
             event.getAddOns().forEach(addOn -> addOnIds.add(addOn.getAddOnId()));
@@ -176,6 +182,43 @@ public class EventController {
             return new ResponseEntity<String>("Menu not found: " + eventModel.getMenuId(), HttpStatus.NOT_FOUND);
         } catch (AddOnNotFoundException e) {
             return new ResponseEntity<String>("Some Add On is not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Something went wrong on our side. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(path = "/admin/markEventConducted/{eventId}")
+    public ResponseEntity<?> markEventConducted(@PathVariable("eventId") String eventId) {
+        try {
+            eventService.markEventConducted(eventId);
+            return new ResponseEntity<String>("Event Marked Conducted", HttpStatus.OK);
+        } catch (EventNotFoundException e) {
+            return new ResponseEntity<String>("Event not found: " + eventId, HttpStatus.NOT_FOUND);
+        } catch (EventStateUpdateException e) {
+            return new ResponseEntity<String>("Cannot Update Event", HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Something went wrong on our side. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(path = {"/admin/cancelEvent/{eventId}", "/user/cancelEvent/{eventId}"})
+    public ResponseEntity<?> cancelEvent(@PathVariable("eventId") String eventId, @RequestAttribute String user_id) {
+        try {
+            User user = userService.getUser(user_id);
+            Event event = eventService.getEventById(eventId);
+            if (user.getRole() == Role.ADMIN || user.getId().equals(event.getBookedBy().getId()))
+            {
+                eventService.cancelEvent(event);
+                return new ResponseEntity<String>("Event Cancelled", HttpStatus.OK);
+            }
+            return new ResponseEntity<String>("Invalid Permissions", HttpStatus.FORBIDDEN);
+
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<String>("User in this token does not exist", HttpStatus.FORBIDDEN);
+        } catch (EventStateUpdateException e) {
+            return new ResponseEntity<String>("Cannot cancel event: " + eventId, HttpStatus.FORBIDDEN);
+        } catch (EventNotFoundException e) {
+            return new ResponseEntity<String>("Event not found: " + eventId, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<String>("Something went wrong on our side. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
         }

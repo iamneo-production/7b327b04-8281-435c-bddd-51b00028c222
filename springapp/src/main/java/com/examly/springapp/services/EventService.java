@@ -7,6 +7,7 @@ import com.examly.springapp.exceptions.*;
 import com.examly.springapp.models.EventModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -74,6 +75,27 @@ public class EventService {
                 EventState.BOOKED
         );
         return eventRepo.save(event);
+    }
+
+    @Transactional
+    public Event markEventConducted(String eventId) throws EventNotFoundException, EventStateUpdateException {
+        Optional<Event> eventOptional = eventRepo.findById(eventId);
+        if(eventOptional.isEmpty())
+            throw new EventNotFoundException();
+        Event event = eventOptional.get();
+        if(event.getState().compareTo(EventState.CONDUCTED)>0)
+            throw new EventStateUpdateException();
+        event.setState(EventState.CONDUCTED);
+        return event;
+
+    }
+
+    @Transactional
+    public Event cancelEvent(Event event) throws EventStateUpdateException {
+        if(event.getState() == EventState.CONDUCTED)
+            throw new EventStateUpdateException();
+        event.setState(EventState.CANCELLED);
+        return event;
     }
 
 }
