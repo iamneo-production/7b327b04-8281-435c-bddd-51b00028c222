@@ -1,5 +1,6 @@
 package com.examly.springapp.database.entities;
 
+import com.examly.springapp.database.enums.EventState;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -59,6 +60,10 @@ public class Event {
     @ManyToMany
     private List<AddOn> addOns;
 
+    @Column(name= "state", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EventState state;
+
     public Event() {
     }
 
@@ -95,6 +100,40 @@ public class Event {
     }
 
     public Event(
+            String eventName,
+            String applicantName,
+            String applicantAddress,
+            String applicantMobile,
+            String applicantEmail,
+            String eventAddress,
+            LocalDate eventDate,
+            LocalTime eventTime,
+            Theme theme,
+            Menu menu,
+            Double eventCost,
+            LocalDate dateBooked,
+            User bookedBy,
+            List<AddOn> addOns,
+            EventState state
+    ) {
+        this.eventName = eventName;
+        this.applicantName = applicantName;
+        this.applicantAddress = applicantAddress;
+        this.applicantMobile = applicantMobile;
+        this.applicantEmail = applicantEmail;
+        this.eventAddress = eventAddress;
+        this.eventDate = eventDate;
+        this.eventTime = eventTime;
+        this.theme = theme;
+        this.menu = menu;
+        this.eventCost = eventCost;
+        this.dateBooked = dateBooked;
+        this.bookedBy = bookedBy;
+        this.addOns = addOns;
+        this.state = state;
+    }
+
+    public Event(
             String eventId,
             String eventName,
             String applicantName,
@@ -109,7 +148,8 @@ public class Event {
             Double eventCost,
             LocalDate dateBooked,
             User bookedBy,
-            List<AddOn> addOns
+            List<AddOn> addOns,
+            EventState state
     ) {
         this.eventId = eventId;
         this.eventName = eventName;
@@ -126,6 +166,7 @@ public class Event {
         this.dateBooked = dateBooked;
         this.bookedBy = bookedBy;
         this.addOns = addOns;
+        this.state = state;
     }
 
     public String getEventId() {
@@ -248,6 +289,14 @@ public class Event {
         this.addOns = addOns;
     }
 
+    public EventState getState() {
+        return state;
+    }
+
+    public void setState(EventState state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
@@ -265,7 +314,8 @@ public class Event {
                 ", eventCost=" + eventCost +
                 ", dateBooked=" + dateBooked +
                 ", bookedBy=" + bookedBy +
-                //", addOns=" + addOns +
+//                ", addOns=" + addOns +
+                ", state=" + state +
                 '}';
     }
 }
