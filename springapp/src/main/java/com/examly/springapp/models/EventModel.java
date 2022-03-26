@@ -1,107 +1,31 @@
-package com.examly.springapp.database.entities;
+package com.examly.springapp.models;
 
 import com.examly.springapp.database.enums.EventState;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Entity
-public class Event {
-
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+public class EventModel {
     private String eventId;
-
-    @Column(nullable = false, length = 100)
     private String eventName;
-
-    @Column(nullable = false, length = 100)
     private String applicantName;
-
-    @Lob
     private String applicantAddress;
-
-    @Column(nullable = false, length = 13)
     private String applicantMobile;
-
     private String applicantEmail;
-
-    @Lob
     private String eventAddress;
-
-    @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate eventDate;
-
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime eventTime;
-
-    @ManyToOne(optional = false)
-    private Theme theme;
-
-    @ManyToOne
-    private Menu menu;
-
-    @Column(nullable = false)
+    private String themeId;
+    private String menuId;
     private Double eventCost;
+    private List<String> addOnIds;
+    private EventState eventState;
 
-    @Column(nullable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateBooked;
-
-    @ManyToOne
-    private User bookedBy;
-
-    @ManyToMany
-    private List<AddOn> addOns;
-
-    @Column(name= "state", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EventState state;
-
-    public Event() {
-    }
-
-    public Event(
-            String eventName,
-            String applicantName,
-            String applicantAddress,
-            String applicantMobile,
-            String applicantEmail,
-            String eventAddress,
-            LocalDate eventDate,
-            LocalTime eventTime,
-            Theme theme,
-            Menu menu,
-            Double eventCost,
-            LocalDate dateBooked,
-            User bookedBy,
-            List<AddOn> addOns,
-            EventState state
-    ) {
-        this.eventName = eventName;
-        this.applicantName = applicantName;
-        this.applicantAddress = applicantAddress;
-        this.applicantMobile = applicantMobile;
-        this.applicantEmail = applicantEmail;
-        this.eventAddress = eventAddress;
-        this.eventDate = eventDate;
-        this.eventTime = eventTime;
-        this.theme = theme;
-        this.menu = menu;
-        this.eventCost = eventCost;
-        this.dateBooked = dateBooked;
-        this.bookedBy = bookedBy;
-        this.addOns = addOns;
-        this.state = state;
-    }
-
-    public Event(
+    public EventModel(
             String eventId,
             String eventName,
             String applicantName,
@@ -111,13 +35,11 @@ public class Event {
             String eventAddress,
             LocalDate eventDate,
             LocalTime eventTime,
-            Theme theme,
-            Menu menu,
+            String themeId,
+            String menuId,
             Double eventCost,
-            LocalDate dateBooked,
-            User bookedBy,
-            List<AddOn> addOns,
-            EventState state
+            List<String> addOnIds,
+            EventState eventState
     ) {
         this.eventId = eventId;
         this.eventName = eventName;
@@ -128,13 +50,11 @@ public class Event {
         this.eventAddress = eventAddress;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
-        this.theme = theme;
-        this.menu = menu;
+        this.themeId = themeId;
+        this.menuId = menuId;
         this.eventCost = eventCost;
-        this.dateBooked = dateBooked;
-        this.bookedBy = bookedBy;
-        this.addOns = addOns;
-        this.state = state;
+        this.addOnIds = addOnIds;
+        this.eventState = eventState;
     }
 
     public String getEventId() {
@@ -209,20 +129,20 @@ public class Event {
         this.eventTime = eventTime;
     }
 
-    public Theme getTheme() {
-        return theme;
+    public String getThemeId() {
+        return themeId;
     }
 
-    public void setTheme(Theme theme) {
-        this.theme = theme;
+    public void setThemeId(String themeId) {
+        this.themeId = themeId;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public String getMenuId() {
+        return menuId;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    public void setMenuId(String menuId) {
+        this.menuId = menuId;
     }
 
     public Double getEventCost() {
@@ -233,41 +153,25 @@ public class Event {
         this.eventCost = eventCost;
     }
 
-    public LocalDate getDateBooked() {
-        return dateBooked;
+    public List<String> getAddOnIds() {
+        return addOnIds;
     }
 
-    public void setDateBooked(LocalDate dateBooked) {
-        this.dateBooked = dateBooked;
+    public void setAddOnIds(List<String> addOnIds) {
+        this.addOnIds = addOnIds;
     }
 
-    public User getBookedBy() {
-        return bookedBy;
+    public EventState getEventState() {
+        return eventState;
     }
 
-    public void setBookedBy(User bookedBy) {
-        this.bookedBy = bookedBy;
-    }
-
-    public List<AddOn> getAddOns() {
-        return addOns;
-    }
-
-    public void setAddOns(List<AddOn> addOns) {
-        this.addOns = addOns;
-    }
-
-    public EventState getState() {
-        return state;
-    }
-
-    public void setState(EventState state) {
-        this.state = state;
+    public void setEventState(EventState eventState) {
+        this.eventState = eventState;
     }
 
     @Override
     public String toString() {
-        return "Event{" +
+        return "EventModel{" +
                 "eventId='" + eventId + '\'' +
                 ", eventName='" + eventName + '\'' +
                 ", applicantName='" + applicantName + '\'' +
@@ -277,13 +181,11 @@ public class Event {
                 ", eventAddress='" + eventAddress + '\'' +
                 ", eventDate=" + eventDate +
                 ", eventTime=" + eventTime +
-                ", theme=" + theme +
-                ", menu=" + menu +
+                ", themeId='" + themeId + '\'' +
+                ", menuId='" + menuId + '\'' +
                 ", eventCost=" + eventCost +
-                ", dateBooked=" + dateBooked +
-                ", bookedBy=" + bookedBy +
-//                ", addOns=" + addOns +
-                ", state=" + state +
+                ", addOnIds=" + addOnIds +
+                ", eventState=" + eventState +
                 '}';
     }
 }
