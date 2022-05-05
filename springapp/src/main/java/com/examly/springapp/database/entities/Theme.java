@@ -1,33 +1,93 @@
-package com.examly.springapp.models;
+package com.examly.springapp.database.entities;
 
-public class ThemeModel {
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+
+@Entity
+public class Theme {
+
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String themeId;
+
+    @Column(nullable = false, length = 100)
     private String themeName;
-    private String themeDescription;
-    private String themePhotographer;
-    private String themeVideographer;
-    private String themeReturnGift;
-    private Double themeCost;
+
     private String themeImageUrl;
 
-    public ThemeModel(
-            String themeId,
+    @Lob
+    private String themeDescription;
+
+    @Column(length = 100)
+    private String themePhotographer;
+
+    @Column(length = 100)
+    private String themeVideographer;
+
+    @Column(length = 100)
+    private String themeReturnGift;
+
+    @Column(nullable = false)
+    private Double themeCost;
+
+    @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateAdded;
+
+    @ManyToOne
+    private User addedBy;
+
+    public Theme() {
+    }
+
+    public Theme(
             String themeName,
+            String themeImageUrl,
             String themeDescription,
             String themePhotographer,
             String themeVideographer,
             String themeReturnGift,
             Double themeCost,
-            String themeImageUrl
+            LocalDate dateAdded,
+            User addedBy
     ) {
-        this.themeId = themeId;
         this.themeName = themeName;
+        this.themeImageUrl = themeImageUrl;
         this.themeDescription = themeDescription;
         this.themePhotographer = themePhotographer;
         this.themeVideographer = themeVideographer;
         this.themeReturnGift = themeReturnGift;
         this.themeCost = themeCost;
+        this.dateAdded = dateAdded;
+        this.addedBy = addedBy;
+    }
+
+    public Theme(
+            String themeId,
+            String themeName,
+            String themeImageUrl,
+            String themeDescription,
+            String themePhotographer,
+            String themeVideographer,
+            String themeReturnGift,
+            Double themeCost,
+            LocalDate dateAdded,
+            User addedBy
+    ) {
+        this.themeId = themeId;
+        this.themeName = themeName;
         this.themeImageUrl = themeImageUrl;
+        this.themeDescription = themeDescription;
+        this.themePhotographer = themePhotographer;
+        this.themeVideographer = themeVideographer;
+        this.themeReturnGift = themeReturnGift;
+        this.themeCost = themeCost;
+        this.dateAdded = dateAdded;
+        this.addedBy = addedBy;
     }
 
     public String getThemeId() {
@@ -44,6 +104,14 @@ public class ThemeModel {
 
     public void setThemeName(String themeName) {
         this.themeName = themeName;
+    }
+
+    public String getThemeImageUrl() {
+        return themeImageUrl;
+    }
+
+    public void setThemeImageUrl(String themeImageUrl) {
+        this.themeImageUrl = themeImageUrl;
     }
 
     public String getThemeDescription() {
@@ -86,25 +154,35 @@ public class ThemeModel {
         this.themeCost = themeCost;
     }
 
-    public String getThemeImageUrl() {
-        return themeImageUrl;
+    public LocalDate getDateAdded() {
+        return dateAdded;
     }
 
-    public void setThemeImageUrl(String themeImageUrl) {
-        this.themeImageUrl = themeImageUrl;
+    public void setDateAdded(LocalDate dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public User getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(User addedBy) {
+        this.addedBy = addedBy;
     }
 
     @Override
     public String toString() {
-        return "ThemeModel{" +
-                "themeId=" + themeId +
+        return "Theme{" +
+                "themeId='" + themeId + '\'' +
                 ", themeName='" + themeName + '\'' +
+                ", themeImageUrl='" + themeImageUrl + '\'' +
                 ", themeDescription='" + themeDescription + '\'' +
                 ", themePhotographer='" + themePhotographer + '\'' +
                 ", themeVideographer='" + themeVideographer + '\'' +
                 ", themeReturnGift='" + themeReturnGift + '\'' +
                 ", themeCost=" + themeCost +
-                ", themeImageUrl='" + themeImageUrl + '\'' +
+                ", dateAdded=" + dateAdded +
+                ", addedBy=" + addedBy +
                 '}';
     }
 }

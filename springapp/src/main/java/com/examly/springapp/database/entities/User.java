@@ -15,7 +15,7 @@ public class User {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, length = 100)
     private String username;
 
     @Column(name = "email", unique = true, nullable = false)
@@ -24,7 +24,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "mobile_number")
+    @Column(name = "mobile_number", length = 13)
     private String mobileNumber;
 
     @Column(name = "active", nullable = false)

@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,9 +22,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public List<User> getUsers() {
-        List<User> user = new ArrayList<>();
-        userRepo.findAll().forEach(user::add);
-        return user;
+        return userRepo.findAll();
     }
 
     public User getUser(String id) throws UserNotFoundException {
@@ -34,22 +31,22 @@ public class UserService {
         return userOptional.get();
     }
 
-	@Transactional
+    @Transactional
     public User editUser(String id, UserModel userModel) throws UserNotFoundException, EmailNotUpdatableException {
         Optional<User> userOptional = userRepo.findById(id);
         userOptional.orElseThrow(UserNotFoundException::new);
-		User user = userOptional.get();
-		if(userModel.getUsername() != null && !Objects.equals(userModel.getUsername(), user.getUsername()))
-			user.setUsername(userModel.getUsername());
-		if (userModel.getEmail() !=null && !Objects.equals(userModel.getEmail(), user.getEmail()))
-			throw new EmailNotUpdatableException();
-		if (userModel.getPassword() !=null && !Objects.equals(passwordEncoder.encode(userModel.getPassword()), user.getPassword()))
-			user.setPassword(passwordEncoder.encode(userModel.getPassword()));
-		if(userModel.getMobileNumber() != null && !Objects.equals(userModel.getMobileNumber(), user.getMobileNumber()))
-			user.setMobileNumber(userModel.getMobileNumber());
-		if(userModel.getUserRole() != null && userModel.getUserRole().compareTo(user.getRole())!=0)
-			user.setRole(userModel.getUserRole());
-		return user;
+        User user = userOptional.get();
+        if (userModel.getUsername() != null && !Objects.equals(userModel.getUsername(), user.getUsername()))
+            user.setUsername(userModel.getUsername());
+        if (userModel.getEmail() != null && !Objects.equals(userModel.getEmail(), user.getEmail()))
+            throw new EmailNotUpdatableException();
+        if (userModel.getPassword() != null && !Objects.equals(passwordEncoder.encode(userModel.getPassword()), user.getPassword()))
+            user.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        if (userModel.getMobileNumber() != null && !Objects.equals(userModel.getMobileNumber(), user.getMobileNumber()))
+            user.setMobileNumber(userModel.getMobileNumber());
+        if (userModel.getUserRole() != null && userModel.getUserRole().compareTo(user.getRole()) != 0)
+            user.setRole(userModel.getUserRole());
+        return user;
     }
 
     @Transactional
