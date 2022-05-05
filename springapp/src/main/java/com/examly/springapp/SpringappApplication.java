@@ -1,5 +1,6 @@
 package com.examly.springapp;
 
+<<<<<<< Updated upstream
 import com.examly.springapp.database.entities.*;
 import com.examly.springapp.database.enums.EventState;
 import com.examly.springapp.database.enums.Role;
@@ -16,10 +17,15 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+=======
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+>>>>>>> Stashed changes
 
 @SpringBootApplication
 public class SpringappApplication {
 
+<<<<<<< Updated upstream
     public static void main(String[] args) {
         SpringApplication.run(SpringappApplication.class, args);
     }
@@ -131,5 +137,10 @@ public class SpringappApplication {
         };
 
     }
+=======
+	public static void main(String[] args) {
+		SpringApplication.run(SpringappApplication.class, args);
+	}
+>>>>>>> Stashed changes
 
 }
